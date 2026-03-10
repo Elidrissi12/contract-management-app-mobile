@@ -1,98 +1,224 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { useTranslation } from '@/i18n';
+import { getContracts } from '@/store/contracts';
 
-export default function HomeScreen() {
+const alertes = [
+  { id: 1, contrat: 'Contrat A-2024-001', client: 'Client ABC', expiration: '5 jours', priorite: 'haute' },
+  { id: 2, contrat: 'Contrat B-2024-002', client: 'Client XYZ', expiration: '10 jours', priorite: 'moyenne' },
+  { id: 3, contrat: 'Contrat C-2024-003', client: 'Client DEF', expiration: '15 jours', priorite: 'basse' },
+];
+
+export default function DashboardScreen() {
+  const { t } = useTranslation();
+  const contracts = getContracts();
+
+  const total = contracts.length;
+  const active = contracts.filter((c) => c.statut === 'Actif').length;
+  const expired = contracts.filter((c) => c.statut === 'Expiré').length;
+  const pending = contracts.filter((c) => c.statut === 'En Attente').length;
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <View
+      className="flex-1 bg-slate-50 dark:bg-slate-950"
+      style={{ flex: 1, backgroundColor: '#f8fafc' }}
+    >
+      {/* Header */}
+      <View
+        className="px-4 pt-12 pb-4"
+        style={{ paddingHorizontal: 20, paddingTop: 48, paddingBottom: 12 }}
+      >
+        <Text
+          className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase"
+          style={{ fontSize: 12, fontWeight: '600', color: '#64748b' }}
+        >
+          {t('common.appName')}
+        </Text>
+        <Text
+          className="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-50"
+          style={{ marginTop: 4, fontSize: 24, fontWeight: '700', color: '#020617' }}
+        >
+          {t('navigation.dashboard')}
+        </Text>
+        <Text
+          className="mt-1 text-sm text-slate-500 dark:text-slate-400"
+          style={{ marginTop: 4, fontSize: 14, color: '#64748b' }}
+        >
+          {t('dashboard.expiringSoon')}
+        </Text>
+      </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <ScrollView
+        className="flex-1 px-4"
+        contentContainerStyle={{ paddingBottom: 24, paddingTop: 8 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Stat cards */}
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            columnGap: 12,
+            rowGap: 12,
+            marginBottom: 24,
+          }}
+        >
+          <DashboardCard
+            label={t('dashboard.totalContracts')}
+            value={String(total)}
+            description={t('dashboard.allContracts')}
+            tone="primary"
+            icon="document-text-outline"
+          />
+          <DashboardCard
+            label={t('dashboard.activeContracts')}
+            value={String(active)}
+            description={t('dashboard.inProgress')}
+            tone="success"
+            icon="trending-up-outline"
+          />
+          <DashboardCard
+            label={t('dashboard.expiredContracts')}
+            value={String(expired)}
+            description={t('dashboard.toRenew')}
+            tone="danger"
+            icon="warning-outline"
+          />
+          <DashboardCard
+            label={t('dashboard.pendingContracts')}
+            value={String(pending)}
+            description={t('dashboard.forSignature')}
+            tone="warning"
+            icon="time-outline"
+          />
+        </View>
+
+        {/* Alerts section */}
+        <View
+          style={{
+            borderRadius: 16,
+            backgroundColor: '#ffffff',
+            padding: 16,
+            shadowColor: '#0f172a',
+            shadowOpacity: 0.05,
+            shadowRadius: 8,
+            shadowOffset: { width: 0, height: 4 },
+          }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center', columnGap: 8, marginBottom: 8 }}>
+            <Ionicons name="alert-circle" size={18} color="#dc2626" />
+            <Text style={{ fontSize: 16, fontWeight: '600', color: '#020617' }}>
+              {t('dashboard.expiringSoon')}
+            </Text>
+          </View>
+
+          {alertes.map((alerte) => (
+            <View
+              key={alerte.id}
+              style={{
+                marginBottom: 8,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                borderRadius: 12,
+                paddingVertical: 10,
+                paddingHorizontal: 12,
+                backgroundColor: '#f8fafc',
+              }}
+            >
+              <View style={{ flex: 1, paddingRight: 12 }}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: '#020617' }}>
+                  {alerte.contrat}
+                </Text>
+                <Text style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{alerte.client}</Text>
+              </View>
+
+              <View style={{ alignItems: 'flex-end', rowGap: 4 }}>
+                <Text style={{ fontSize: 12, fontWeight: '500', color: '#b91c1c' }}>
+                  {`Expire dans ${alerte.expiration}`}
+                </Text>
+                <View
+                  style={{
+                    borderRadius: 999,
+                    paddingHorizontal: 12,
+                    paddingVertical: 4,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor:
+                      alerte.priorite === 'haute'
+                        ? '#fee2e2'
+                        : alerte.priorite === 'moyenne'
+                        ? '#fef3c7'
+                        : '#e5e7eb',
+                  }}
+                >
+                  <Text style={{ fontSize: 11, fontWeight: '600', color: '#374151' }}>{alerte.priorite}</Text>
+                </View>
+              </View>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+type DashboardCardProps = {
+  label: string;
+  value: string;
+  description: string;
+  tone?: 'primary' | 'success' | 'danger' | 'warning';
+  icon?: keyof typeof Ionicons.glyphMap;
+};
+
+function DashboardCard({ label, value, description, tone = 'primary' }: DashboardCardProps) {
+  const toneClasses: Record<
+    NonNullable<DashboardCardProps['tone']>,
+    { badge: string; accent: string }
+  > = {
+    primary: {
+      badge: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-200',
+      accent: 'text-blue-600 dark:text-blue-300',
+    },
+    success: {
+      badge: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200',
+      accent: 'text-emerald-600 dark:text-emerald-300',
+    },
+    danger: {
+      badge: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-200',
+      accent: 'text-rose-600 dark:text-rose-300',
+    },
+    warning: {
+      badge: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200',
+      accent: 'text-amber-600 dark:text-amber-300',
+    },
+  };
+
+  const { badge, accent } = toneClasses[tone];
+
+  return (
+    <View
+      style={{
+        flexBasis: '47%',
+        flexGrow: 1,
+        borderRadius: 16,
+        backgroundColor: '#ffffff',
+        padding: 16,
+        shadowColor: '#0f172a',
+        shadowOpacity: 0.05,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 4 },
+      }}
+    >
+      <View style={{ marginBottom: 4, flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{ fontSize: 12, fontWeight: '600', color: '#64748b', textTransform: 'uppercase' }}>
+          {label}
+        </Text>
+      </View>
+      <Text className={`text-3xl font-bold tracking-tight ${accent}`}>{value}</Text>
+      <Text style={{ marginTop: 4, fontSize: 12, color: '#64748b' }}>{description}</Text>
+    </View>
+  );
+}
+
