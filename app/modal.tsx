@@ -11,7 +11,12 @@ export default function ModalScreen() {
       <Link href="/" dismissTo style={styles.link}>
         <ThemedText type="link">Go to home screen</ThemedText>
       </Link>
+      <Link href = "/contracts/new" style={styles.link}>
+        <ThemedText type = "link">Go to new contract screen</ThemedText>
+      </Link>
     </ThemedView>
+
+    
   );
 }
 

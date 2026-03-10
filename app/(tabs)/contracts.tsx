@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useFocusEffect } from 'expo-router';
 import { useTranslation } from '@/i18n';
 import { Contract, ContractStatus, getContracts } from '@/store/contracts';
 
@@ -13,7 +13,14 @@ const statusColors: Record<ContractStatus, string> = {
 export default function ContractsScreen() {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
-  const contracts = getContracts();
+  const [contracts, setContracts] = useState<Contract[]>([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setContracts(getContracts());
+    }, []),
+  );
+
   const filtered = contracts.filter((c) => {
     const q = query.toLowerCase();
     return (

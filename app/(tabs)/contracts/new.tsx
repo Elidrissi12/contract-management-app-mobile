@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { useTranslation } from '@/i18n';
@@ -26,7 +26,11 @@ export default function NewContractScreen() {
   };
 
   const handleSubmit = () => {
-    if (!form.titre || !form.client || !form.debut || !form.fin || !form.montant) {
+    if (!form.client || !form.debut || !form.fin || !form.montant) {
+      Alert.alert(
+        'Champs manquants',
+        'Merci de renseigner au minimum le client, les dates et le montant.',
+      );
       return;
     }
 
