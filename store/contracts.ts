@@ -72,3 +72,8 @@ export function getContractById(id: number): Contract | null {
   return mockContracts.find((contract) => contract.id === id) ?? null;
 }
 
+export function addContract(contract: Contract): void {
+  mockContracts.push(contract);
+}
+
+

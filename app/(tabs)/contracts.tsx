@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Link } from 'expo-router';
 import { useTranslation } from '@/i18n';
@@ -13,32 +13,49 @@ const statusColors: Record<ContractStatus, string> = {
 export default function ContractsScreen() {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
-
-  const contracts = useMemo(() => getContracts(), []);
-
-  const filtered = useMemo(
-    () =>
-      contracts.filter((c) => {
-        const q = query.toLowerCase();
-        return (
-          c.numero.toLowerCase().includes(q) ||
-          c.client.toLowerCase().includes(q) ||
-          c.type.toLowerCase().includes(q)
-        );
-      }),
-    [contracts, query],
-  );
+  const contracts = getContracts();
+  const filtered = contracts.filter((c) => {
+    const q = query.toLowerCase();
+    return (
+      c.numero.toLowerCase().includes(q) ||
+      c.client.toLowerCase().includes(q) ||
+      c.type.toLowerCase().includes(q)
+    );
+  });
 
   return (
     <View style={{ flex: 1, backgroundColor: '#f8fafc' }}>
       {/* Header */}
-      <View style={{ paddingTop: 48, paddingHorizontal: 20, paddingBottom: 12 }}>
-        <Text style={{ fontSize: 24, fontWeight: '700', color: '#020617' }}>
-          {t('contracts.title')}
-        </Text>
-        <Text style={{ marginTop: 4, fontSize: 13, color: '#64748b' }}>
-          {t('contracts.listTitle')}
-        </Text>
+      <View
+        style={{
+          paddingTop: 48,
+          paddingHorizontal: 20,
+          paddingBottom: 12,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <View>
+          <Text style={{ fontSize: 24, fontWeight: '700', color: '#020617' }}>
+            {t('contracts.title')}
+          </Text>
+          <Text style={{ marginTop: 4, fontSize: 13, color: '#64748b' }}>
+            {t('contracts.listTitle')}
+          </Text>
+        </View>
+        <Link href="/contracts/new" asChild>
+          <Pressable
+            style={{
+              borderRadius: 999,
+              paddingHorizontal: 14,
+              paddingVertical: 8,
+              backgroundColor: '#2563eb',
+            }}
+          >
+            <Text style={{ fontSize: 12, fontWeight: '600', color: '#f9fafb' }}>+ Ajouter</Text>
+          </Pressable>
+        </Link>
       </View>
 
       {/* Search */}

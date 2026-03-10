@@ -1,15 +1,22 @@
-import { useMemo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { ScrollView, Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useTranslation } from '@/i18n';
 import { getContractById } from '@/store/contracts';
+import {
+  ChatMessage,
+  getBotResponse,
+  getInitialChatMessages,
+} from '@/store/chatbot';
 
 export default function ContractDetailScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const { t } = useTranslation();
+  const [messages, setMessages] = useState<ChatMessage[]>(() => getInitialChatMessages());
+  const [input, setInput] = useState('');
 
   const contractId = useMemo(() => {
     const parsed = Number(id);
@@ -143,23 +150,143 @@ export default function ContractDetailScreen() {
           </View>
         </View>
 
-        {/* Placeholder for future chatbot / notes */}
-        <View
-          style={{
-            borderRadius: 18,
-            backgroundColor: '#0f172a',
-            padding: 16,
+        {/* Mini chatbot */}
+        <MiniChat
+          contractNumber={contract.numero}
+          messages={messages}
+          input={input}
+          onChangeInput={setInput}
+          onSend={(text) => {
+            const trimmed = text.trim();
+            if (!trimmed) return;
+
+            const userMessage: ChatMessage = {
+              id: messages.length + 1,
+              sender: 'user',
+              text: trimmed,
+            };
+            setMessages((prev) => [...prev, userMessage]);
+
+            setTimeout(() => {
+              const baseResponse = getBotResponse(trimmed);
+              const botMessage: ChatMessage = {
+                id: userMessage.id + 1,
+                sender: 'bot',
+                text: `Contrat ${contract.numero} — ${baseResponse}`,
+              };
+              setMessages((prev) => [...prev, botMessage]);
+            }, 500);
+
+            setInput('');
           }}
-        >
-          <Text style={{ fontSize: 15, fontWeight: '600', color: '#e5e7eb', marginBottom: 4 }}>
-            Assistant IA (bientôt)
-          </Text>
-          <Text style={{ fontSize: 12, color: '#9ca3af' }}>
-            Cet espace accueillera un mini chatbot dédié à ce contrat, adapté de la version web.
-          </Text>
-        </View>
+        />
       </ScrollView>
     </View>
   );
 }
+
+type MiniChatProps = {
+  contractNumber: string;
+  messages: ChatMessage[];
+  input: string;
+  onChangeInput: (value: string) => void;
+  onSend: (text: string) => void;
+};
+
+function MiniChat({ contractNumber, messages, input, onChangeInput, onSend }: MiniChatProps) {
+  return (
+    <View
+      style={{
+        marginTop: 12,
+        borderRadius: 18,
+        backgroundColor: '#020617',
+        padding: 14,
+      }}
+    >
+      <Text style={{ fontSize: 15, fontWeight: '600', color: '#e5e7eb', marginBottom: 4 }}>
+        Assistant IA — {contractNumber}
+      </Text>
+      <Text style={{ fontSize: 12, color: '#9ca3af', marginBottom: 8 }}>
+        Posez une question sur ce contrat. Les réponses sont simulées à partir de votre logique web.
+      </Text>
+
+      <View
+        style={{
+          maxHeight: 180,
+          marginBottom: 8,
+        }}
+      >
+        <ScrollView
+          style={{ flexGrow: 0 }}
+          contentContainerStyle={{ rowGap: 6 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {messages.map((msg) => (
+            <View
+              key={msg.id}
+              style={{
+                flexDirection: 'row',
+                justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+              }}
+            >
+              <View
+                style={{
+                  maxWidth: '80%',
+                  borderRadius: 16,
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                  backgroundColor: msg.sender === 'user' ? '#22c55e' : '#0f172a',
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 12,
+                    color: msg.sender === 'user' ? '#f9fafb' : '#e5e7eb',
+                  }}
+                >
+                  {msg.text}
+                </Text>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          columnGap: 8,
+          borderRadius: 999,
+          paddingHorizontal: 10,
+          paddingVertical: 6,
+          backgroundColor: '#020617',
+          borderWidth: 1,
+          borderColor: '#1f2937',
+        }}
+      >
+        <TextInput
+          placeholder="Votre question..."
+          placeholderTextColor="#6b7280"
+          value={input}
+          onChangeText={onChangeInput}
+          onSubmitEditing={() => onSend(input)}
+          style={{
+            flex: 1,
+            fontSize: 13,
+            color: '#f9fafb',
+            paddingVertical: 4,
+          }}
+        />
+        <Text
+          onPress={() => onSend(input)}
+          style={{ fontSize: 13, fontWeight: '600', color: '#22c55e' }}
+        >
+          Envoyer
+        </Text>
+      </View>
+    </View>
+  );
+}
+
 
