@@ -1,0 +1,52 @@
+export const fr = {
+  common: {
+    appName: 'ContractHub',
+    cancel: 'Annuler',
+    save: 'Enregistrer',
+    confirm: 'Confirmer',
+    delete: 'Supprimer',
+    edit: 'Modifier',
+    back: 'Retour',
+  },
+  navigation: {
+    dashboard: 'Dashboard',
+    contracts: 'Contrats',
+    clients: 'Clients',
+    chatbot: 'Assistant IA',
+    settings: 'Paramètres',
+  },
+  dashboard: {
+    totalContracts: 'Total Contrats',
+    activeContracts: 'Contrats Actifs',
+    expiredContracts: 'Contrats Expirés',
+    pendingContracts: 'En Attente',
+    allContracts: 'Tous les contrats',
+    inProgress: 'En cours',
+    toRenew: 'À renouveler',
+    forSignature: 'Signature',
+    expiringSoon: "Contrats Proches d'Expiration",
+  },
+  contracts: {
+    title: 'Contrats',
+    listTitle: 'Liste des Contrats',
+    number: 'Numéro',
+    client: 'Client',
+    type: 'Type',
+    startDate: 'Début',
+    endDate: 'Fin',
+    amount: 'Montant',
+    status: 'Statut',
+    actions: 'Actions',
+    addContract: 'Ajouter Contrat',
+    contractDetails: 'Détails du Contrat',
+  },
+  clients: {
+    title: 'Clients',
+    addClient: 'Ajouter Client',
+  },
+  chatbot: {
+    title: 'Assistant IA',
+    inputPlaceholder: 'Tapez votre question...',
+  },
+} as const;
+

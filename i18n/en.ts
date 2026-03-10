@@ -1,0 +1,52 @@
+export const en = {
+  common: {
+    appName: 'ContractHub',
+    cancel: 'Cancel',
+    save: 'Save',
+    confirm: 'Confirm',
+    delete: 'Delete',
+    edit: 'Edit',
+    back: 'Back',
+  },
+  navigation: {
+    dashboard: 'Dashboard',
+    contracts: 'Contracts',
+    clients: 'Clients',
+    chatbot: 'AI Assistant',
+    settings: 'Settings',
+  },
+  dashboard: {
+    totalContracts: 'Total Contracts',
+    activeContracts: 'Active Contracts',
+    expiredContracts: 'Expired Contracts',
+    pendingContracts: 'Pending',
+    allContracts: 'All contracts',
+    inProgress: 'In progress',
+    toRenew: 'To renew',
+    forSignature: 'For signature',
+    expiringSoon: 'Contracts Expiring Soon',
+  },
+  contracts: {
+    title: 'Contracts',
+    listTitle: 'Contracts List',
+    number: 'Number',
+    client: 'Client',
+    type: 'Type',
+    startDate: 'Start',
+    endDate: 'End',
+    amount: 'Amount',
+    status: 'Status',
+    actions: 'Actions',
+    addContract: 'Add Contract',
+    contractDetails: 'Contract Details',
+  },
+  clients: {
+    title: 'Clients',
+    addClient: 'Add Client',
+  },
+  chatbot: {
+    title: 'AI Assistant',
+    inputPlaceholder: 'Type your question...',
+  },
+} as const;
+
