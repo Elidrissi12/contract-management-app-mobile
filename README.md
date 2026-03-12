@@ -1,50 +1,8 @@
-# Welcome to your Expo app 👋
-
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+# Contract management app 👋
+![WhatsApp Image 2026-03-12 at 11 36 03](https://github.com/user-attachments/assets/0d4981ea-2779-4a34-92dd-741c60dc51bc)
+![WhatsApp Image 2026-03-12 at 11 36 03 (1)](https://github.com/user-attachments/assets/e1098cb3-1fcf-4933-b37e-aac0846e8a5e)
+![WhatsApp Image 2026-03-12 at 11 36 04 (1)](https://github.com/user-attachments/assets/4e755f22-da33-4d12-99dd-f2e2664c3c46)
+![WhatsApp Image 2026-03-12 at 11 36 04 (2)](https://github.com/user-attachments/assets/f64755b3-0b81-41e0-8e77-38bf7ee88ae4)
+![WhatsApp Image 2026-03-12 at 11 36 04 (3)](https://github.com/user-attachments/assets/f03e05b2-cea8-4ba3-a7d8-b4d7da097ff1)
+![WhatsApp Image 2026-03-12 at 11 36 04 (4)](https://github.com/user-attachments/assets/5cf2b4d3-19b7-4250-a8be-8b48c8d7d8e3)
+![WhatsApp Image 2026-03-12 at 11 36 04](https://github.com/user-attachments/assets/c9c71b5b-0214-4758-88d2-12ca77d41f5c)
