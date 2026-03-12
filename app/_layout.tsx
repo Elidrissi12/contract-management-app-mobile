@@ -47,7 +47,7 @@ function CustomDrawerContent() {
   );
 }
 
-function RootNavigation() {
+function RootNavigation() { 
   const { colorScheme } = useAppContext();
 
   return (
