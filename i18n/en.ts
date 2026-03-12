@@ -44,6 +44,14 @@ export const en = {
     title: 'Clients',
     addClient: 'Add Client',
   },
+  notifications: {
+    title: 'Notifications',
+    all: 'All',
+    unread: 'Unread',
+    expirations: 'Expirations',
+    emptyTitle: 'No notifications',
+    emptyDescription: 'You have no notifications for this filter',
+  },
   chatbot: {
     title: 'AI Assistant',
     inputPlaceholder: 'Type your question...',

@@ -44,6 +44,14 @@ export const fr = {
     title: 'Clients',
     addClient: 'Ajouter Client',
   },
+  notifications: {
+    title: 'Notifications',
+    all: 'Tous',
+    unread: 'Non lues',
+    expirations: 'Expirations',
+    emptyTitle: 'Aucune notification',
+    emptyDescription: "Vous n'avez aucune notification avec ce filtre",
+  },
   chatbot: {
     title: 'Assistant IA',
     inputPlaceholder: 'Tapez votre question...',

@@ -52,3 +52,20 @@ export function getClientById(id: number): Client | null {
   return mockClients.find((client) => client.id === id) ?? null;
 }
 
+export function addClient(client: Client): void {
+  mockClients.push(client);
+}
+
+export function updateClient(id: number, partial: Partial<Client>): void {
+  const index = mockClients.findIndex((c) => c.id === id);
+  if (index === -1) return;
+  mockClients[index] = { ...mockClients[index], ...partial };
+}
+
+export function deleteClient(id: number): void {
+  const index = mockClients.findIndex((c) => c.id === id);
+  if (index === -1) return;
+  mockClients.splice(index, 1);
+}
+
+
