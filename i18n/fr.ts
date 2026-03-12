@@ -56,5 +56,23 @@ export const fr = {
     title: 'Assistant IA',
     inputPlaceholder: 'Tapez votre question...',
   },
+  settings: {
+    title: 'Paramètres',
+    profileTab: 'Profil',
+    themeTab: 'Apparence',
+    aiTab: 'Assistant IA',
+    personalInfoTitle: 'Informations Personnelles',
+    personalInfoSubtitle: 'Mettez à jour vos informations de profil',
+    fullName: 'Nom Complet',
+    email: 'Email',
+    company: 'Entreprise',
+    themeMode: 'Thème',
+    language: 'Langue',
+    themeSystem: 'Système',
+    themeLight: 'Clair',
+    themeDark: 'Sombre',
+    languageFrench: 'Français',
+    languageEnglish: 'Anglais',
+  },
 } as const;
 

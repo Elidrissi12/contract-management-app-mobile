@@ -56,5 +56,23 @@ export const en = {
     title: 'AI Assistant',
     inputPlaceholder: 'Type your question...',
   },
+  settings: {
+    title: 'Settings',
+    profileTab: 'Profile',
+    themeTab: 'Appearance',
+    aiTab: 'AI Assistant',
+    personalInfoTitle: 'Personal Information',
+    personalInfoSubtitle: 'Update your profile information',
+    fullName: 'Full Name',
+    email: 'Email',
+    company: 'Company',
+    themeMode: 'Theme',
+    language: 'Language',
+    themeSystem: 'System',
+    themeLight: 'Light',
+    themeDark: 'Dark',
+    languageFrench: 'French',
+    languageEnglish: 'English',
+  },
 } as const;
 
