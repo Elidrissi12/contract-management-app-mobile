@@ -3,7 +3,7 @@ import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-nativ
 import { useRouter } from 'expo-router';
 
 import { useTranslation } from '@/i18n';
-import { addClient, Client, getClients } from '@/store/clients';
+import { createClient } from '@/store/clients';
 
 export default function NewClientScreen() {
   const { t } = useTranslation();
@@ -19,25 +19,22 @@ export default function NewClientScreen() {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.nom || !form.email) {
       Alert.alert('Champs manquants', 'Merci de renseigner au minimum le nom et l’email.');
       return;
     }
 
-    const existing = getClients();
-    const nextId = (existing[existing.length - 1]?.id ?? 0) + 1;
-
-    const newClient: Client = {
-      id: nextId,
-      nom: form.nom,
-      email: form.email,
-      telephone: form.telephone,
-      contrats: 0,
-    };
-
-    addClient(newClient);
-    router.replace('/clients');
+    try {
+      await createClient({
+        nom: form.nom,
+        email: form.email,
+        telephone: form.telephone,
+      });
+      router.replace('/clients');
+    } catch {
+      Alert.alert('Erreur', 'Impossible de créer le client.');
+    }
   };
 
   return (

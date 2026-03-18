@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { Link, useFocusEffect } from 'expo-router';
 import { useTranslation } from '@/i18n';
-import { Contract, ContractStatus, getContracts } from '@/store/contracts';
+import { Contract, ContractStatus, fetchContracts } from '@/store/contracts';
 
 const statusColors: Record<ContractStatus, string> = {
   Actif: '#16a34a',
@@ -14,10 +14,37 @@ export default function ContractsScreen() {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [contracts, setContracts] = useState<Contract[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
-      setContracts(getContracts());
+      let isActive = true;
+
+      const load = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const data = await fetchContracts();
+          if (isActive) {
+            setContracts(data);
+          }
+        } catch (e) {
+          if (isActive) {
+            setError('Impossible de charger les contrats.');
+          }
+        } finally {
+          if (isActive) {
+            setLoading(false);
+          }
+        }
+      };
+
+      load();
+
+      return () => {
+        isActive = false;
+      };
     }, []),
   );
 
@@ -89,6 +116,18 @@ export default function ContractsScreen() {
           }}
         />
       </View>
+
+      {/* État de chargement / erreur */}
+      {loading && (
+        <View style={{ paddingHorizontal: 20, paddingTop: 8 }}>
+          <Text style={{ fontSize: 13, color: '#64748b' }}>Chargement des contrats...</Text>
+        </View>
+      )}
+      {error && (
+        <View style={{ paddingHorizontal: 20, paddingTop: 8 }}>
+          <Text style={{ fontSize: 13, color: '#dc2626' }}>{error}</Text>
+        </View>
+      )}
 
       {/* List */}
       <ScrollView

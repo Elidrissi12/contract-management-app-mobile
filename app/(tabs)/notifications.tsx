@@ -58,6 +58,7 @@ export default function NotificationsScreen() {
           marginBottom: 8,
         }}
       >
+        
         <FilterChip
           label={t('notifications.all')}
           active={filter === 'tous'}

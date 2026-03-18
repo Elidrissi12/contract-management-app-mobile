@@ -3,16 +3,43 @@ import { Alert, Linking, Pressable, ScrollView, Text, TextInput, View } from 're
 import { Link, useFocusEffect } from 'expo-router';
 
 import { useTranslation } from '@/i18n';
-import { Client, deleteClient, getClients } from '@/store/clients';
+import { Client, deleteClient, fetchClients } from '@/store/clients';
 
 export default function ClientsScreen() {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [clients, setClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
-      setClients(getClients());
+      let isActive = true;
+
+      const load = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+          const data = await fetchClients();
+          if (isActive) {
+            setClients(data);
+          }
+        } catch (e) {
+          if (isActive) {
+            setError('Impossible de charger les clients.');
+          }
+        } finally {
+          if (isActive) {
+            setLoading(false);
+          }
+        }
+      };
+
+      load();
+
+      return () => {
+        isActive = false;
+      };
     }, []),
   );
 
@@ -81,6 +108,18 @@ export default function ClientsScreen() {
         />
       </View>
 
+      {/* État de chargement / erreur */}
+      {loading && (
+        <View style={{ paddingHorizontal: 20, paddingTop: 8 }}>
+          <Text style={{ fontSize: 13, color: '#64748b' }}>Chargement des clients...</Text>
+        </View>
+      )}
+      {error && (
+        <View style={{ paddingHorizontal: 20, paddingTop: 8 }}>
+          <Text style={{ fontSize: 13, color: '#dc2626' }}>{error}</Text>
+        </View>
+      )}
+
       {/* List */}
       <ScrollView
         style={{ flex: 1, paddingHorizontal: 20 }}
@@ -91,7 +130,15 @@ export default function ClientsScreen() {
           <ClientCard
             key={client.id}
             client={client}
-            onDeleted={() => setClients(getClients())}
+            onDeleted={async () => {
+              try {
+                await deleteClient(client.id);
+                const data = await fetchClients();
+                setClients(data);
+              } catch {
+                Alert.alert('Erreur', 'Impossible de supprimer le client.');
+              }
+            }}
           />
         ))}
       </ScrollView>

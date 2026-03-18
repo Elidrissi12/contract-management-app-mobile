@@ -2,7 +2,8 @@ import { ScrollView, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useTranslation } from '@/i18n';
-import { getContracts } from '@/store/contracts';
+import { fetchContracts } from '@/store/contracts';
+import { useEffect, useState } from 'react';
 
 const alertes = [
   { id: 1, contrat: 'Contrat A-2024-001', client: 'Client ABC', expiration: '5 jours', priorite: 'haute' },
@@ -12,12 +13,39 @@ const alertes = [
 
 export default function DashboardScreen() {
   const { t } = useTranslation();
-  const contracts = getContracts();
+  const [total, setTotal] = useState(0);
+  const [active, setActive] = useState(0);
+  const [expired, setExpired] = useState(0);
+  const [pending, setPending] = useState(0);
 
-  const total = contracts.length;
-  const active = contracts.filter((c) => c.statut === 'Actif').length;
-  const expired = contracts.filter((c) => c.statut === 'Expiré').length;
-  const pending = contracts.filter((c) => c.statut === 'En Attente').length;
+  useEffect(() => {
+    let isActive = true;
+
+    const load = async () => {
+      try {
+        const contracts = await fetchContracts();
+        if (!isActive) return;
+
+        const totalCount = contracts.length;
+        const activeCount = contracts.filter((c) => c.statut === 'Actif').length;
+        const expiredCount = contracts.filter((c) => c.statut === 'Expiré').length;
+        const pendingCount = contracts.filter((c) => c.statut === 'En Attente').length;
+
+        setTotal(totalCount);
+        setActive(activeCount);
+        setExpired(expiredCount);
+        setPending(pendingCount);
+      } catch {
+        // en cas d'erreur, on garde les compteurs à 0
+      }
+    };
+
+    load();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   return (
     <View

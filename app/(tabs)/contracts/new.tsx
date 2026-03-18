@@ -3,7 +3,7 @@ import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-nativ
 import { useRouter } from 'expo-router';
 
 import { useTranslation } from '@/i18n';
-import { addContract, Contract, ContractStatus, getContracts } from '@/store/contracts';
+import { createContract } from '@/store/contracts';
 
 const contractTypes = ['Service', 'Fourniture', 'Consultation', 'Maintenance'] as const;
 
@@ -25,7 +25,7 @@ export default function NewContractScreen() {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!form.client || !form.debut || !form.fin || !form.montant) {
       Alert.alert(
         'Champs manquants',
@@ -34,22 +34,20 @@ export default function NewContractScreen() {
       return;
     }
 
-    const existing = getContracts();
-    const nextId = (existing[existing.length - 1]?.id ?? 0) + 1;
-
-    const newContract: Contract = {
-      id: nextId,
-      numero: `CTR-NEW-${nextId.toString().padStart(3, '0')}`,
-      client: form.client,
-      type: form.type,
-      debut: form.debut,
-      fin: form.fin,
-      montant: `${form.montant} €`,
-      statut: 'Actif' as ContractStatus,
-    };
-
-    addContract(newContract);
-    router.replace('/contracts');
+    try {
+      await createContract({
+        titre: form.titre,
+        clientId: form.client, 
+        type: form.type,
+        debut: form.debut,
+        fin: form.fin,
+        montant: form.montant,
+        description: form.description,
+      });
+      router.replace('/contracts');
+    } catch {
+      Alert.alert('Erreur', 'Impossible de créer le contrat.');
+    }
   };
 
   return (

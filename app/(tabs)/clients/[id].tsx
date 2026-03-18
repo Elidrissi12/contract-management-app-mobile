@@ -1,30 +1,52 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 import { useTranslation } from '@/i18n';
-import { Client, getClientById, updateClient } from '@/store/clients';
+import { Client, fetchClientById } from '@/store/clients';
 
 export default function EditClientScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
   const { t } = useTranslation();
 
-  const clientId = useMemo(() => {
-    const parsed = Number(id);
-    return Number.isFinite(parsed) ? parsed : NaN;
+  const [original, setOriginal] = useState<Client | null>(null);
+  const [form, setForm] = useState({
+    nom: '',
+    email: '',
+    telephone: '',
+  });
+
+  useEffect(() => {
+    let isActive = true;
+
+    const load = async () => {
+      if (!id) return;
+      try {
+        const client = await fetchClientById(String(id));
+        if (isActive) {
+          setOriginal(client);
+          if (client) {
+            setForm({
+              nom: client.nom,
+              email: client.email,
+              telephone: client.telephone ?? '',
+            });
+          }
+        }
+      } catch {
+        if (isActive) {
+          setOriginal(null);
+        }
+      }
+    };
+
+    load();
+
+    return () => {
+      isActive = false;
+    };
   }, [id]);
-
-  const original = useMemo<Client | null>(
-    () => (Number.isFinite(clientId) ? getClientById(clientId) : null),
-    [clientId],
-  );
-
-  const [form, setForm] = useState(() => ({
-    nom: original?.nom ?? '',
-    email: original?.email ?? '',
-    telephone: original?.telephone ?? '',
-  }));
 
   if (!original) {
     return (
@@ -63,11 +85,7 @@ export default function EditClientScreen() {
       return;
     }
 
-    updateClient(original.id, {
-      nom: form.nom,
-      email: form.email,
-      telephone: form.telephone,
-    });
+    // TODO: implémenter l'appel PUT /api/Clients/{id} côté backend
     router.replace('/clients');
   };
 

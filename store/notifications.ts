@@ -8,7 +8,7 @@ export type NotificationItem = {
   titre: string;
   message: string;
   priorite: NotificationPriority;
-  date: string; // ISO date string
+  date: string; 
   lu: boolean;
 };
 

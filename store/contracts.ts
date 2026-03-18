@@ -1,79 +1,82 @@
+import { API_BASE_URL } from '@/constants/api';
+
 export type ContractStatus = 'Actif' | 'Expiré' | 'En Attente';
 
 export type Contract = {
-  id: number;
+  id: string;
   numero: string;
   client: string;
   type: string;
-  debut: string; 
-  fin: string; 
+  debut: string;
+  fin: string;
   montant: string;
   statut: ContractStatus;
 };
 
-export const mockContracts: Contract[] = [
-  {
-    id: 1,
-    numero: 'CTR-2024-001',
-    client: 'Entreprise ABC',
-    type: 'Service',
-    debut: '2024-01-15',
-    fin: '2025-01-15',
-    montant: '50,000 €',
-    statut: 'Actif',
-  },
-  {
-    id: 2,
-    numero: 'CTR-2024-002',
-    client: 'Société XYZ',
-    type: 'Fourniture',
-    debut: '2024-02-01',
-    fin: '2024-12-31',
-    montant: '75,000 €',
-    statut: 'Actif',
-  },
-  {
-    id: 3,
-    numero: 'CTR-2024-003',
-    client: 'Client DEF',
-    type: 'Consultation',
-    debut: '2023-06-01',
-    fin: '2024-05-31',
-    montant: '25,000 €',
-    statut: 'Expiré',
-  },
-  {
-    id: 4,
-    numero: 'CTR-2024-004',
-    client: 'Partenaire GHI',
-    type: 'Service',
-    debut: '2024-04-10',
-    fin: '2024-10-10',
-    montant: '60,000 €',
-    statut: 'En Attente',
-  },
-  {
-    id: 5,
-    numero: 'CTR-2024-005',
-    client: 'Client JKL',
-    type: 'Maintenance',
-    debut: '2024-03-15',
-    fin: '2025-03-15',
-    montant: '40,000 €',
-    statut: 'Actif',
-  },
-];
+type ContractApiDto = {
+  id?: string;
+  number?: string;
+  title?: string;
+  clientId?: string;
+  startDate?: string;
+  endDate?: string;
+  amount?: number;
+  status?: string;
+};
 
-export function getContracts(): Contract[] {
-  return mockContracts;
+export async function fetchContracts(): Promise<Contract[]> {
+  const response = await fetch(`${API_BASE_URL}/api/Contracts`);
+  if (!response.ok) {
+    throw new Error('Erreur lors du chargement des contrats');
+  }
+
+  const data = (await response.json()) as ContractApiDto[];
+
+  return data.map((item) => ({
+    id: item.id ?? '',
+    numero: item.number ?? '',
+    client: '', 
+    type: item.title ?? '',
+    debut: item.startDate ?? '',
+    fin: item.endDate ?? '',
+    montant: item.amount != null ? `${item.amount} €` : '',
+    statut: (item.status as ContractStatus) ?? 'Actif',
+  }));
 }
 
-export function getContractById(id: number): Contract | null {
-  return mockContracts.find((contract) => contract.id === id) ?? null;
-}
+export async function createContract(input: {
+  titre: string;
+  clientId: string;
+  type: string;
+  debut: string;
+  fin: string;
+  montant: string;
+  description?: string;
+}): Promise<void> {
+  const amountValue = Number(input.montant.replace(',', '.'));
 
-export function addContract(contract: Contract): void {
-  mockContracts.push(contract);
-}
+  const body = {
+    number: '',
+    title: input.titre,
+    clientId: input.clientId,
+    type: 0,
+    startDate: input.debut,
+    endDate: input.fin,
+    amount: isNaN(amountValue) ? 0 : amountValue,
+    description: input.description ?? null,
+    pdfUrl: null,
+  };
 
+  const response = await fetch(`${API_BASE_URL}/api/Contracts`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error('Erreur lors de la création du contrat');
+  }
+}
 
